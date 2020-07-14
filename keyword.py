@@ -19,15 +19,7 @@ for index, row in data.iterrows():
         cnt_content = collections.Counter(seg_list)
         cnt_non_keyword.update(cnt_content)
 
-keyword = pd.DataFrame(cnt_keyword.items(), columns=['words', 'times'])
+keyword = pd.DataFrame({'money_news':cnt_keyword, 'none_news':cnt_non_keyword})
+keyword = keyword.sort_values(by = 'money_news', ascending = False)
 
-test = pd.DataFrame({'money_news':cnt_keyword, 'none_news':cnt_non_keyword})
-
-# non_keyword = pd.DataFrame(cnt_non_keyword.items(), columns=['words', 'times'])
-
-# keyword = keyword.sort_values(by = 'times', ascending = False)
-# keyword.to_csv('keyword.csv')
-
-# non_keyword = non_keyword.sort_values(by = 'times', ascending = False)
-# non_keyword.to_csv('non_keyword.csv')
-test.to_csv('test.csv')
+keyword.to_csv('keyword.csv')
