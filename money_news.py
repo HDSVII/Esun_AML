@@ -16,10 +16,6 @@ true_neg = 0
 for index, row in data.iterrows():
     keywscore = 0
     for keyw_idx, keyw_row in keywords.iterrows():
-        # print (keyw_idx)
-        # print (type(keyw_idx))
-        # print (keywords.index[keyw_idx])
-        # print (type(keywords.index[keyw_idx]))
         if keyw_idx in row['content']:
             keywscore += keyw_row['cond_prob']
     score_list.append(keywscore)
