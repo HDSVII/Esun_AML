@@ -34,4 +34,14 @@ keyword = keyword.fillna(0)
 keyword['cond_prob'] = keyword['money_news']/(keyword['money_news'] + keyword['none_news'])
 
 keyword = keyword.sort_values(by = 'cond_prob', ascending = False)
-keyword.to_csv('keyword.csv')
+# keyword.to_csv('keyword.csv')
+
+prob_threshold = 0.4
+freq_threshold = 5
+
+index_noprob = keyword[ keyword['cond_prob'] < prob_threshold ].index
+keyword.drop(index_noprob , inplace=True)
+index_lowfreq = keyword[ keyword['money_news'] + keyword['none_news'] < freq_threshold ].index
+keyword.drop(index_lowfreq , inplace=True)
+
+keyword.to_csv('keyword_filted.csv')
