@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup, NavigableString
 import pandas as pd
 import re
-from csv import reader,writer
+from csv import reader, writer
 from urllib.parse import urlparse
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
@@ -54,6 +54,12 @@ def crawler(domain,url):
 
         except Exception as e:
             print(e)
+
+            print(soup.title)
+            if '404' in soup.title.text:
+                print(soup.title)
+                return '404'
+
             return "Error"
         print ()
 
@@ -65,6 +71,33 @@ def crawler(domain,url):
             for p in article_body:
                 # Ignore promo
                 if p.get('class') is not None and 'appE1121' in p.get('class'):
+                    continue
+
+                # Ignore image caption
+                if p.parent.get('class') is not None and 'photo' in p.parent.get('class'):
+                    continue
+
+                result.append(p.text)
+
+            return result
+
+        except Exception as e:
+            print(e)
+            return "Error"
+        print ()
+
+    elif domain in ['ec.ltn.com.tw']:
+        try:
+            soup = BeautifulSoup(r.text, 'html.parser')
+            article_body = soup.find_all('p')
+            # result.append(str(soup))
+
+            for p in article_body:
+                if p.parent is not None and p.parent.name == 'li':
+                    continue
+
+                # Ignore promo
+                if p.get('class') is not None and ('appE1121' in p.get('class') or 'before_ir' in p.get('class')):
                     continue
 
                 # Ignore image caption
@@ -199,7 +232,7 @@ def crawler(domain,url):
     elif domain=="udn.com":
     
         try:
-
+            r.encoding = 'utf-8'
             soup = BeautifulSoup(r.text, 'html.parser')
             for noisy_content in soup.find_all('div', class_="article-content__paragraph"):
                 for p in noisy_content.find_all('p'):
@@ -575,11 +608,13 @@ if __name__ == '__main__':
     firstLine = lines.pop(0)
 
 
-    r = reader(open('ESUN_news.csv', encoding='utf-8'))
+    r = reader(open('ESUN_news_test.csv', encoding='utf-8'))
     output_lines = list(r)
 
     open('failed.txt', 'w', encoding='utf-8').close()
-    open('temp_output.txt', 'w', encoding='utf-8').close()
+
+    writer = writer(open('ESUN_news_test.csv', 'w', encoding='utf-8', newline=''))
+    writer.writerow(['news_ID', 'hyperlink', 'content', 'name'])
 
     for line in lines:
         line=line.strip()
@@ -588,6 +623,9 @@ if __name__ == '__main__':
             ID=token[0]
             url=token[1]
             domain = urlparse(url).netloc
+            if domain not in ['ec.ltn.com.tw']:
+                writer.writerow(output_lines[int(ID)])
+                continue
             #prev,back=token[2].split(" ### 省略內文 ### ") #前後文
 
             print("ID: ",ID)
@@ -608,12 +646,11 @@ if __name__ == '__main__':
                     failed_urls.write('{}, {}\n'.format(ID, text))
                     failed_urls.write(url + '\n')
 
-            with open('temp_output.txt', 'a', encoding='utf-8') as temp_output:
-                temp_output.write('{},{},{}\n'.format(ID, url, text))
-
             output_lines[int(ID)][2]='"'+text+'"'
+            writer.writerow(output_lines[int(ID)])
+
             #print("Done.")
             print()
      
-    writer = writer(open('ESUN_news_test.csv', 'w', encoding='utf-8'))
-    writer.writerows(output_lines)
+    # writer = writer(open('ESUN_news_test.csv', 'w', encoding='utf-8'))
+    # writer.writerows(output_lines)
