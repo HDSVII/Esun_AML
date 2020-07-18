@@ -16,6 +16,7 @@ for index, row in data.iterrows():
         seg_list = jieba.cut(row['content'])
         seg_list = list(dict.fromkeys(seg_list))
         cnt_content = collections.Counter(seg_list)
+        print (cnt_content)
         cnt_keyword.update(cnt_content)
         moneynews_num += 1
     else:
