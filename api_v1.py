@@ -81,4 +81,4 @@ def inference():
     return jsonify({'esun_timestamp': data['esun_timestamp'], 'server_uuid': server_uuid, 'answer': answer, 'server_timestamp': server_timestamp, 'esun_uuid': data['esun_uuid']})
 
 if __name__ == "__main__":    
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host='35.221.234.13', port=8080, debug=True)
