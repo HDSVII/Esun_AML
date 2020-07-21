@@ -28,7 +28,7 @@ def parseNews(path):
 
 		# enc.append(1 if len(news['name']) == 2 else 0)
 		enc.append(bc.encode([news['content']])[0])
-		print('Bert encoding: {}'.encoding(index))
+		print('Bert encoding: {}'.format(index))
 		pass
 
 	return enc
