@@ -57,11 +57,27 @@ def _check_datatype_to_list(prediction):
 def healthcheck():
     """ API for health check """
     data = request.get_json(force=True)  
+
+    # log writing
+    with open('log.txt', 'a', encoding='utf-8') as log_file:
+        log_file.write('API call: healthcheck\n')
+        log_file.write('{}\n'.format(str(data)))
+
     t = datetime.datetime.now()  
     ts = str(int(t.utcnow().timestamp()))
     server_uuid = generate_server_uuid(CAPTAIN_EMAIL+ts)
     server_timestamp = t.strftime("%Y-%m-%d %H:%M:%S")
-    return jsonify({'esun_uuid': data['esun_uuid'], 'server_uuid': server_uuid, 'captain_email': CAPTAIN_EMAIL, 'server_timestamp': server_timestamp})
+
+    return_data = {'esun_uuid': data['esun_uuid'], 'server_uuid': server_uuid, 'captain_email': CAPTAIN_EMAIL, 'server_timestamp': server_timestamp}
+
+    # log writing
+    with open('log.txt', 'a', encoding='utf-8') as log_file:
+        log_file.write('Response\n')
+        log_file.write('{}\n'.format(str(return_data)))
+
+    return jsonify(return_data)
+
+
 
 @app.route('/inference', methods=['POST'])
 def inference():
@@ -72,13 +88,27 @@ def inference():
     t = datetime.datetime.now()  
     ts = str(int(t.utcnow().timestamp()))
     server_uuid = generate_server_uuid(CAPTAIN_EMAIL+ts)
+
+
+    # log writing
+    with open('log.txt', 'a', encoding='utf-8') as log_file:
+        log_file.write('API call: inference\n')
+        log_file.write('{}\n'.format(str(data)))
     
     try:
         answer = predict(data['news'])
     except:
         raise ValueError('Model error.')        
     server_timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return jsonify({'esun_timestamp': data['esun_timestamp'], 'server_uuid': server_uuid, 'answer': answer, 'server_timestamp': server_timestamp, 'esun_uuid': data['esun_uuid']})
+
+    return_data = {'esun_timestamp': data['esun_timestamp'], 'server_uuid': server_uuid, 'answer': answer, 'server_timestamp': server_timestamp, 'esun_uuid': data['esun_uuid']}
+
+    # log writing
+    with open('log.txt', 'a', encoding='utf-8') as log_file:
+        log_file.write('Response\n')
+        log_file.write('{}\n'.format(str(return_data)))
+
+    return jsonify(return_data)
 
 if __name__ == "__main__":    
     app.run(host='0.0.0.0', port=8080, debug=True)
