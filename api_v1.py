@@ -94,6 +94,10 @@ def inference():
     with open('log.txt', 'a', encoding='utf-8') as log_file:
         log_file.write('API call: inference\n')
         log_file.write('{}\n'.format(str(data)))
+
+    # write articles
+    with open('articles.txt', 'a', encoding='utf-8') as articles_file:
+        articles_file.write('{}\n'.format(data['news']))
     
     try:
         answer = predict(data['news'])
