@@ -36,7 +36,7 @@ def parseNews(path):
 
 # USE THIS FUNCTION
 def createCls():
-    train_data_dir = 'data/ESUN_news_3_label.csv'
+    train_data_dir = '../data/ESUN_news_3_label.csv'
     train_data = pd.read_csv(train_data_dir)
     # print (train_data['label_lm'])
 
