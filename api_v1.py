@@ -4,14 +4,21 @@ from flask import request
 from flask import jsonify
 import datetime
 import hashlib
+import sys
 import numpy as np
 import pandas as pd
+
+sys.path.append('/bert_classification')
+
+from client_SVM import createCls, isLaunderingWithBert
 
 app = Flask(__name__)
 ####### PUT YOUR INFORMATION HERE #######
 CAPTAIN_EMAIL = 'kaoweitse220@gmail.com'          #
 SALT = 'ai-samurai'                        #
 #########################################
+
+myCls = createCls() # fit
 
 def generate_server_uuid(input_string):
     """ Create your own server_uuid
@@ -32,6 +39,12 @@ def predict(article):
 
     ####### PUT YOUR MODEL INFERENCING CODE HERE #######
     prediction = []
+
+    if isLaunderingWithBert(myCls, article):
+        # perform name extraction here
+        # prediction = ...
+        pass
+
     # defult anser: ['aha','danny','jack']
     
     
@@ -117,3 +130,4 @@ def inference():
 
 if __name__ == "__main__":    
     app.run(host='0.0.0.0', port=8081, debug=True)
+
