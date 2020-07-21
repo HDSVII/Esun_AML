@@ -23,9 +23,12 @@ def parseNews(path):
 	enc = []
 
 	bc = BertClient()
+    print('Created Bert')
 	for index, news in df.iterrows():
+
 		# enc.append(1 if len(news['name']) == 2 else 0)
 		enc.append(bc.encode([news['content']])[0])
+        print('Bert encoding: {}'.encoding(index))
 		pass
 
 	return enc
