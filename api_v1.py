@@ -18,7 +18,7 @@ CAPTAIN_EMAIL = 'kaoweitse220@gmail.com'          #
 SALT = 'ai-samurai'                        #
 #########################################
 
-cls = createCls()
+myCls = createCls() # fit
 
 def generate_server_uuid(input_string):
     """ Create your own server_uuid
@@ -40,7 +40,7 @@ def predict(article):
     ####### PUT YOUR MODEL INFERENCING CODE HERE #######
     prediction = []
 
-    if isLaunderingWithBert(cls, article):
+    if isLaunderingWithBert(myCls, article):
         # perform name extraction here
         # prediction = ...
         pass

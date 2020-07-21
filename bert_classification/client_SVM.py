@@ -40,35 +40,35 @@ def createCls():
     train_data = pd.read_csv(train_data_dir)
     # print (train_data['label_lm'])
 
-    cls = SVC()
-    cls.fit(parseNews(train_data_dir), train_data['label_lm'])
+    myCls = SVC()
+    myCls.fit(parseNews(train_data_dir), train_data['label_lm'])
 
-    return cls
+    return myCls
 
 # returns true or false
 # USE THIS FUNCTION
-def isLaunderingWithBert(cls, news_string) -> bool:
+def isLaunderingWithBert(myCls, news_string) -> bool:
     """
     Usage:
-    cls = createCls() # in the beginning of api_v1.py
-    result = isLaunderingWithBert(cls, news_string) # news_string is the string of the news article
+    myCls = createCls() # in the beginning of api_v1.py
+    result = isLaunderingWithBert(myCls, news_string) # news_string is the string of the news article
     """
     bc = BertClient()
     enc = [bc.encode(news_string)[0]]
 
-    #svm_result = cls.predict(parseNews('test_data.csv'))
-    svm_result = cls.predict(enc)
+    #svm_result = myCls.predict(parseNews('test_data.csv'))
+    svm_result = myCls.predict(enc)
     
     return (svm_result[0] == 1)
 
     
 
 def test_run():
-    cls = createCls()
+    myCls = createCls()
     train_data_dir = 'train_data.csv'
     test_data_dir = 'test_data.csv'
 
-    svm_result = cls.predict(parseNews(test_data_dir))
+    svm_result = myCls.predict(parseNews(test_data_dir))
     train_data = pd.read_csv(train_data_dir)
     test_data = pd.read_csv(test_data_dir)
 
@@ -94,7 +94,7 @@ def test_run():
     print ('false_neg:', fneg)
     print ('accuracy:', (tpos+tneg)/len(test_data.index))
 
-    svm_result_train = cls.predict(parseNews(train_data_dir))
+    svm_result_train = myCls.predict(parseNews(train_data_dir))
 
     for pred_label, true_label in zip(svm_result_train, train_data['label_lm']):
         if pred_label == 1 and true_label == 1:
