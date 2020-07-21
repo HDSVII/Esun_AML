@@ -31,7 +31,8 @@ def predict(article):
     """
 
     ####### PUT YOUR MODEL INFERENCING CODE HERE #######
-    prediction = ['aha','danny','jack']
+    prediction = []
+    # defult anser: ['aha','danny','jack']
     
     
     ####################################################
