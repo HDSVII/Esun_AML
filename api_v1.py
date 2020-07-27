@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 import datetime
+import pickle
 import hashlib
 import sys
 import numpy as np
@@ -21,26 +22,31 @@ CAPTAIN_EMAIL = 'kaoweitse220@gmail.com'          #
 SALT = 'ai-samurai'                        #
 #########################################
 
+# data_loader, model, params = evaluate_config()
+# print('name extraction configured')
+# myCls = createCls() # fit
+# print('myCls created')
+
 
 # Initiate prediction models
-data_loader, model, params = evaluate_config()
-print('name extraction configured')
-myCls = createCls() # fit
-print('myCls created')
+# Load necessary data from pickle files
+print('Loading preprocessed data.')
+data_loader, model, params, myCls = None, None, None, None
+with open('data_loader.pickle', 'rb') as pickle_file:
+    data_loader = pickle.load(pickle_file)
+
+with open('model.pickle', 'rb') as pickle_file:
+    model = pickle.load(pickle_file)
+
+with open('params.pickle', 'rb') as pickle_file:
+    params = pickle.load(pickle_file)
+
+with open('myCls.pickle', 'rb') as pickle_file:
+    myCls = pickle.load(pickle_file)
+
+print('Preprocessed data loaded.')
 
 
-# Test prediction functionality
-sentence = ''
-with open('NER_BERT_pytorch/ner_test.txt', 'r', encoding='utf-8') as test:
-    sentence = test.read()
-
-print('Prediction check:')
-print(predict(sentence))
-
-print('Name extraction check:')
-print(extractName(data_loader, model, params, sentence))
-
-print('Waiting for api call...')
 
 def generate_server_uuid(input_string):
     """ Create your own server_uuid
@@ -61,6 +67,7 @@ def predict(article):
 
     ####### PUT YOUR MODEL INFERENCING CODE HERE #######
     prediction = []
+    article = bytes(article, 'utf-8').decode('utf-8','ignore')
 
 
     is_laundering = isLaunderingWithBert(myCls, article)
@@ -154,6 +161,22 @@ def inference():
 
     return jsonify(return_data)
 
-if __name__ == "__main__":    
-    app.run(host='0.0.0.0', port=8081, debug=True)
 
+
+
+if __name__ == "__main__":
+    # Test prediction functionality
+    sentence = ''
+    with open('NER_BERT_pytorch/ner_test.txt', 'r', encoding='utf-8') as test:
+        sentence = test.read()
+    sentence = bytes(sentence, 'utf-8').decode('utf-8','ignore')
+
+    print('Prediction check:')
+    print(predict(sentence))
+
+    print('Name extraction check:')
+    print(extractName(data_loader, model, params, sentence))
+
+    print('Waiting for api call...')
+
+    app.run(host='0.0.0.0', port=8081, debug=True)

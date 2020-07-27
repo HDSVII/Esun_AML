@@ -65,8 +65,8 @@ def evaluate(model, data_iterator, params, mark='Eval', verbose=False):
         true_tags.extend([idx2tag.get(idx) for indices in batch_tags for idx in indices])
         
     # assert len(pred_tags) == len(true_tags)
-    print(pred_tags)
-    print(len(pred_tags))
+    # print(pred_tags)
+    # print(len(pred_tags))
 
     # logging loss, f1 and report
     # metrics = {}

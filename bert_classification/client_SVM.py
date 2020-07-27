@@ -83,7 +83,7 @@ def isLaunderingWithBert(myCls, news_string) -> bool:
     result = isLaunderingWithBert(myCls, news_string) # news_string is the string of the news article
     """
     bc = BertClient()
-    enc = [bc.encode(news_string)[0]]
+    enc = [bc.encode([news_string])[0]]
 
     #svm_result = myCls.predict(parseNews('test_data.csv'))
     svm_result = myCls.predict(enc)
