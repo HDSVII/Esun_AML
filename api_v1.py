@@ -1,4 +1,3 @@
-
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -8,9 +7,13 @@ import sys
 import numpy as np
 import pandas as pd
 
-sys.path.append('/bert_classification')
+# sys.path.append('./bert_classification')
+# sys.path.append('./NER-BERT-pytorch')
 
-from client_SVM import createCls, isLaunderingWithBert
+from bert_classification.client_SVM import createCls, isLaunderingWithBert
+from NER_BERT_pytorch.evaluate import evaluate_config
+from NER_BERT_pytorch.NerToResult import extractName
+
 
 app = Flask(__name__)
 ####### PUT YOUR INFORMATION HERE #######
@@ -18,7 +21,26 @@ CAPTAIN_EMAIL = 'kaoweitse220@gmail.com'          #
 SALT = 'ai-samurai'                        #
 #########################################
 
+
+# Initiate prediction models
+data_loader, model, params = evaluate_config()
+print('name extraction configured')
 myCls = createCls() # fit
+print('myCls created')
+
+
+# Test prediction functionality
+sentence = ''
+with open('NER_BERT_pytorch/ner_test.txt', 'r', encoding='utf-8') as test:
+    sentence = test.read()
+
+print('Prediction check:')
+print(predict(sentence))
+
+print('Name extraction check:')
+print(extractName(data_loader, model, params, sentence))
+
+print('Waiting for api call...')
 
 def generate_server_uuid(input_string):
     """ Create your own server_uuid
@@ -40,10 +62,14 @@ def predict(article):
     ####### PUT YOUR MODEL INFERENCING CODE HERE #######
     prediction = []
 
-    if isLaunderingWithBert(myCls, article):
+
+    is_laundering = isLaunderingWithBert(myCls, article)
+    print('is_laundering result:{}'.format(is_laundering))
+    if is_laundering:
         # perform name extraction here
-        # prediction = ...
-        pass
+        print('performing prediction')
+        prediction = extractName(data_loader, model, params, article)
+        print('prediction result:{}'.format(prediction))
 
     # defult anser: ['aha','danny','jack']
     
